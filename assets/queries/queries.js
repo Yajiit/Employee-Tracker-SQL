@@ -1,4 +1,5 @@
 // queries.js
+const inquirer = require('inquirer');
 const pool = require('../config/connections');
 const consoleTable = require('console.table');
 
@@ -58,10 +59,36 @@ function viewAllEmployees(startApp) {
   });
 }
 
-
+// Function to add a department
+function addDepartment(startApp) {
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'departmentName',
+        message: 'Enter the name of the new department:',
+        validate: (input) => input.trim() !== '',
+      },
+    ])
+    .then((answers) => {
+      const query = 'INSERT INTO department (name) VALUES (?)';
+      pool.query(query, [answers.departmentName], (err, results) => {
+        if (err) {
+          console.error('Error:', err);
+        } else {
+          console.log(`Department '${answers.departmentName}' added successfully!`);
+          startApp();
+        }
+      });
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+}
 // export functionality
 module.exports = {
     viewAllDepartments,
     viewAllEmployees,
     viewAllRoles,
+    addDepartment,
 };
