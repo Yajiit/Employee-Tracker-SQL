@@ -85,10 +85,115 @@ function addDepartment(startApp) {
       console.error('Error:', error);
     });
 }
+
+// Function to add a role
+function addRole(startApp) {
+  // Fetch all departments to allow the user to select the department for the new role
+  const queryDepartments = 'SELECT id, name FROM department';
+  pool.query(queryDepartments, (err, departments) => {
+    if (err) throw err;
+    inquirer
+      .prompt([
+        {
+          type: 'input',
+          name: 'roleTitle',
+          message: 'Enter the title of the new role:',
+          validate: (input) => input.trim() !== '',
+        },
+        {
+          type: 'input',
+          name: 'roleSalary',
+          message: 'Enter the salary for the new role:',
+          validate: (input) => !isNaN(input),
+        },
+        {
+          type: 'list',
+          name: 'departmentId',
+          message: 'Select the department for the new role:',
+          choices: departments.map((dept) => ({ name: dept.name, value: dept.id })),
+        },
+      ])
+      .then((answers) => {
+        const query = 'INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)';
+        pool.query(query, [answers.roleTitle, parseFloat(answers.roleSalary), answers.departmentId], (err, res) => {
+          if (err) throw err;
+          console.log(`Role '${answers.roleTitle}' added successfully!`);
+          startApp();
+        });
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  });
+}
+
+// Function to add an employee
+function addEmployee(startApp) {
+  // Fetch all roles and employees to allow the user to select the role and manager for the new employee
+  const queryRoles = 'SELECT id, title FROM role';
+  const queryManagers = 'SELECT id, first_name, last_name FROM employee';
+  pool.query(queryRoles, (errRoles, roles) => {
+    if (errRoles) {
+      console.error('Error:', errRoles);
+      return;
+    }
+    
+    pool.query(queryManagers, (errManagers, employees) => {
+      if (errManagers) {
+        console.error('Error:', errManagers);
+        return;
+      }
+
+      inquirer
+        .prompt([
+          {
+            type: 'input',
+            name: 'firstName',
+            message: "Enter the employee's first name:",
+            validate: (input) => input.trim() !== '',
+          },
+          {
+            type: 'input',
+            name: 'lastName',
+            message: "Enter the employee's last name:",
+            validate: (input) => input.trim() !== '',
+          },
+          {
+            type: 'list',
+            name: 'roleId',
+            message: "Select the employee's role:",
+            choices: roles.map((role) => ({ name: role.title, value: role.id })),
+          },
+          {
+            type: 'list',
+            name: 'managerId',
+            message: "Select the employee's manager (if applicable):",
+            choices: [{ name: 'None', value: null }, ...employees.map((employee) => ({ name: `${employee.first_name} ${employee.last_name}`, value: employee.id }))],
+          },
+        ])
+        .then((answers) => {
+          const query = 'INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)';
+          pool.query(query, [answers.firstName, answers.lastName, answers.roleId, answers.managerId], (err, res) => {
+            if (err) {
+              console.error('Error:', err);
+            } else {
+              console.log(`Employee '${answers.firstName} ${answers.lastName}' added successfully!`);
+              startApp();
+            }
+          });
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    });
+  });
+}
 // export functionality
 module.exports = {
     viewAllDepartments,
     viewAllEmployees,
     viewAllRoles,
     addDepartment,
+    addRole,
+    addEmployee,
 };

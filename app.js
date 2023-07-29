@@ -2,7 +2,7 @@
 const inquirer = require('inquirer');
 const pool = require('./assets/config/connections');
 const consoleTable = require('console.table');
-const { viewAllDepartments, viewAllRoles, viewAllEmployees, addDepartment } = require('./assets/queries/queries');
+const { viewAllDepartments, viewAllRoles, viewAllEmployees, addDepartment, addRole, addEmployee } = require('./assets/queries/queries');
 
 // Function to prompt the user for actions
 function startApp() {
@@ -16,6 +16,8 @@ function startApp() {
         'View All Roles',
         'View All Employees',
         'Add a Department',
+        'Add a Role',
+        'Add an Employee',
         // add more choices here
         'Exit'
       ]
@@ -34,6 +36,12 @@ function startApp() {
         case 'Add a Department':
           addDepartment(startApp);
           break;
+        case 'Add a Role':
+          addRole(startApp);
+          break;
+        case 'Add an Employee':
+          addEmployee(startApp);
+          break;          
 // template for more options
 
 // case 'CHOICE HERE':
