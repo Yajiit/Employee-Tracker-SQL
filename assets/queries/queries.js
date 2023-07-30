@@ -188,6 +188,57 @@ function addEmployee(startApp) {
     });
   });
 }
+
+// Function to update an employee role
+function updateEmployeeRole(startApp) {
+  // Fetch all employees and roles to allow the user to select the employee and the new role
+  const queryEmployees = 'SELECT id, first_name, last_name FROM employee';
+  const queryRoles = 'SELECT id, title FROM role';
+  
+  pool.query(queryEmployees, (errEmployees, employees) => {
+    if (errEmployees) {
+      console.error('Error:', errEmployees);
+      return;
+    }
+    
+    pool.query(queryRoles, (errRoles, roles) => {
+      if (errRoles) {
+        console.error('Error:', errRoles);
+        return;
+      }
+
+      inquirer
+        .prompt([
+          {
+            type: 'list',
+            name: 'employeeId',
+            message: 'Select the employee to update:',
+            choices: employees.map((employee) => ({ name: `${employee.first_name} ${employee.last_name}`, value: employee.id })),
+          },
+          {
+            type: 'list',
+            name: 'roleId',
+            message: 'Select the employee\'s new role:',
+            choices: roles.map((role) => ({ name: role.title, value: role.id })),
+          },
+        ])
+        .then((answers) => {
+          const query = 'UPDATE employee SET role_id = ? WHERE id = ?';
+          pool.query(query, [answers.roleId, answers.employeeId], (err, res) => {
+            if (err) {
+              console.error('Error:', err);
+            } else {
+              console.log('Employee role updated successfully!');
+              startApp();
+            }
+          });
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+        });
+    });
+})};
+
 // export functionality
 module.exports = {
     viewAllDepartments,
@@ -196,4 +247,5 @@ module.exports = {
     addDepartment,
     addRole,
     addEmployee,
+    updateEmployeeRole,
 };
