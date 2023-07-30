@@ -3,6 +3,7 @@ const inquirer = require('inquirer');
 const pool = require('./assets/config/connections');
 const consoleTable = require('console.table');
 const { viewAllDepartments, viewAllRoles, viewAllEmployees, addDepartment, addRole, addEmployee, updateEmployeeRole } = require('./assets/queries/queries');
+const { updateEmployeeManager, viewEmployeesByDepartment, viewEmployeesByManager, deleteData, viewDepartmentSalary } = require('./assets/queries/bonusQueries')
 
 // Function to prompt the user for actions
 function startApp() {
@@ -19,6 +20,11 @@ function startApp() {
         'Add a Role',
         'Add an Employee',
         'Update an Employee Role',
+        'Update Employee Manager',
+        'View Employees by Manager',
+        'View Employees by Department',
+        'Delete Data',
+        'View Total Department Salary',
         // add more choices here
         'Exit'
       ]
@@ -46,10 +52,25 @@ function startApp() {
         case 'Update an Employee Role':
           updateEmployeeRole(startApp);
           break;
+        case 'Update Employee Manager':
+          updateEmployeeManager(startApp);
+          break;
+        case 'View Employees by Manager':
+          viewEmployeesByManager(startApp);
+          break;
+        case 'View Employees by Department':
+          viewEmployeesByDepartment(startApp);
+          break;
+        case 'Delete Data':
+          deleteData(startApp);
+          break;
+        case 'View Total Department Salary':
+          viewDepartmentSalary(startApp);
+          break;          
 // template for more options
 
 // case 'CHOICE HERE':
-//          functionNameHere();
+//          functionNameHere(startApp);
 //          break;
         case 'Exit':
           pool.end();

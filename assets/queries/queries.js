@@ -189,7 +189,7 @@ function addEmployee(startApp) {
   });
 }
 
-// Function to update an employee role
+// Function to update employee role
 function updateEmployeeRole(startApp) {
   // Fetch all employees and roles to allow the user to select the employee and the new role
   const queryEmployees = 'SELECT id, first_name, last_name FROM employee';
