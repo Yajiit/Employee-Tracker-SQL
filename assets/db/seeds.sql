@@ -59,7 +59,7 @@ VALUES
   
   -- Security Department
   (109, 'Tasha', 'Yar', 9, 101),          -- Chief Security Officer
-  (110, 'Worf', NULL, 10, 109),            -- Security Officer
+  (110, 'Worf', 'Martok', 10, 109),            -- Security Officer
   
   -- Medical Department
   (111, 'Beverly', 'Crusher', 11, 101),   -- Chief Medical Officer
