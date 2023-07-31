@@ -1,3 +1,9 @@
+-- DROP tables
+drop table if exists employee;
+drop table if exists role;
+drop table if exists department;
+
+-- CREATE tables 
 -- department table
 create table department (
   id INT auto_increment PRIMARY KEY,
